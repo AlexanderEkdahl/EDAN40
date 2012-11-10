@@ -43,7 +43,7 @@ stateOfMind b = do
 -- rulesApply [("I need *", "Why do you need *?")] "I need you to kill yourself"
 -- rulesApply [((words "I need *"), (words "Why do you need * ?"))] (words "I need you to kill yourself")
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
-rulesApply p i = try (transformationsApply "*" reflect p) i
+rulesApply p = try (transformationsApply "*" reflect p)
 
 -- reflect ["i", "will", "never", "see", "my", "reflection", "in", "your", "eyes"]
 reflect :: Phrase -> Phrase
@@ -92,8 +92,8 @@ rulesCompile r = map f r
 reductions :: [PhrasePair]
 reductions = (map.map2) (words, words)
   [ ( "please *", "*" ),
-    ( "can you *", "*" ),
     ( "could you *", "*" ),
+    ( "can you *", "*"),
     ( "tell me if you are *", "are you *" ),
     ( "tell me who * is", "who is *" ),
     ( "tell me what * is", "what is *" ),
@@ -108,7 +108,11 @@ reduce :: Phrase -> Phrase
 reduce = reductionsApply reductions
 
 reductionsApply :: [PhrasePair] -> Phrase -> Phrase
-{- TO BE WRITTEN -}
-reductionsApply _ = id
+reductionsApply r i = try (transformationsApply "*" id reductions) i
+
+
+-- repeat untill Nothing with fix?
+
+-- take a list of phrase pairs and apply them on the input phrase to remove shit
 
 

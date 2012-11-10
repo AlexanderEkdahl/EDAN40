@@ -1,7 +1,6 @@
 module Pattern where
 import Utilities
 
-
 -------------------------------------------------------
 -- Match and substitute
 --------------------------------------------------------
@@ -21,8 +20,8 @@ match _ [] [] = Just []
 match _ [] _  = Nothing
 match _ _ []  = Nothing
 match wc p s
-  | head p == wc = orElse ( singleWildcardMatch p s ) ( longerWildcardMatch p s )
-  | head p == head s = match wc ( tail p ) ( tail s )
+  | head p == wc = orElse (singleWildcardMatch p s) (longerWildcardMatch p s)
+  | head p == head s = match wc (tail p) (tail s)
   | otherwise = Nothing
 
 -- match '*' "I need *" "I need you to kill yourself"
@@ -40,23 +39,10 @@ singleWildcardMatch (wc:ps) (x:xs)
 longerWildcardMatch _ [] = Nothing
 longerWildcardMatch [] _ = Nothing
 longerWildcardMatch (wc:ps) xs
-  | reverse ( take ( length ps ) ( reverse xs ) ) == ps = Just ( take ( length xs - length ps ) xs )
+  | reverse (take (length ps) (reverse xs)) == ps = Just (take (length xs - length ps) xs)
   | otherwise = Nothing
 
 -- If there is another wildcard.. split at it and do another match from there but ignore the results
-
-
--- Test cases --------------------
-
-testPattern =  "a=*;"
-testSubstitutions = "32"
-testString = "a=32;"
-
-substituteTest = substitute '*' testPattern testSubstitutions
-substituteCheck = substituteTest == testString
-
-matchTest = match '*' testPattern testString
-matchCheck = matchTest == Just testSubstitutions
 
 -------------------------------------------------------
 -- Applying patterns
@@ -64,6 +50,7 @@ matchCheck = matchTest == Just testSubstitutions
 
 -- Applying a single pattern
 -- transformationApply '*' (unwords . reflect . words)  "I need you to kill yourself" ("I need *", "Why do you need * ?")
+-- transformationApply '*' id "please kill yourself" ("please *", "*")
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
 transformationApply wc f l t = mmap (substitute wc (snd t)) (mmap f (match wc (fst t) l))
 

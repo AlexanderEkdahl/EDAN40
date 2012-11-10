@@ -21,6 +21,8 @@ orElse (Just a) _  = Just a
 
 try :: (a -> Maybe a) -> a -> a
 try f x = maybe x id (f x)
+-- Tries running the function f on parameter x. If it is unequal to Nothing it returns the value of the function.
+-- Otherwise returns the default value of x
 
 fix :: Eq a => (a -> a) -> a -> a
 fix f x
