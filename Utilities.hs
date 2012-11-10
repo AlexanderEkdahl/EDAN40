@@ -10,6 +10,7 @@ mmap :: (a -> b) -> Maybe a -> Maybe b
 mmap f  Nothing  = Nothing
 mmap f (Just x)  = Just (f x)
 -- main = print (mmap square (Just 2))
+-- If the second argument is unequal to Nothing the function f is run on value of the second argument
 -- can be used on curried(?) functions example.. transformationApply wc f l t = mmap (substitute wc (snd t)) (match wc (fst t) l)
 -- where substitute is lacking one argument(that is later applied with match)
 

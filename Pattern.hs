@@ -25,6 +25,10 @@ match wc p s
   | head p == head s = match wc ( tail p ) ( tail s )
   | otherwise = Nothing
 
+-- match '*' "I need *" "I need you to kill yourself"
+-- match "*" ["I","need","*"] ["I","need","you","to","kill","yourself"]
+-- mmap reflect (match "*" ["I","need","*"] ["I","need","you","to","kill","yourself"])
+
 -- Helper function to match
 singleWildcardMatch, longerWildcardMatch :: Eq a => [a] -> [a] -> Maybe [a]
 singleWildcardMatch _ [] = Nothing
@@ -54,18 +58,22 @@ substituteCheck = substituteTest == testString
 matchTest = match '*' testPattern testString
 matchCheck = matchTest == Just testSubstitutions
 
-
-
 -------------------------------------------------------
 -- Applying patterns
 --------------------------------------------------------
 
 -- Applying a single pattern
+-- transformationApply '*' (unwords . reflect . words)  "I need you to kill yourself" ("I need *", "Why do you need * ?")
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
 transformationApply wc f l t = mmap (substitute wc (snd t)) (mmap f (match wc (fst t) l))
 
+-- transformationApply "*" id ["I need you to kill yourself"] (["I need *"], ["Why do you need * ?"])
+-- transformationApply '*' id "I need you to kill yourself" ("I need *", "Why do you need * ?")
+-- transformationApply "*" id (words "I need you to kill yourself") ((words "I need *"), (words "Why do you need * ?"))
+
 
 -- Applying a list of patterns until one succeeds
+-- transformationsApply '*' (unwords . reflect . words) [("I need *", "Why do you need * ?")] "I need you to kill yourself"
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
 transformationsApply _ _ [] _ = Nothing
 transformationsApply wc f t l = orElse (transformationApply wc f l (head t)) (transformationsApply wc f (tail t) l)

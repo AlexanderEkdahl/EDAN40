@@ -3,7 +3,7 @@ import Utilities
 import Pattern
 import Random
 import Char
-
+import Random
 
 
 chatterbot :: String -> [(String, [String])] -> IO ()
@@ -30,38 +30,46 @@ type BotBrain = [(Phrase, [Phrase])]
 --------------------------------------------------------
 
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
-{- TO BE WRITTEN -}
-stateOfMind _ = return id
+stateOfMind b = do
+  r <- randomIO :: IO Float
+  let f x = (fst x, pick r (snd x))
+  return (rulesApply (map f b))
 
+-- return (rulesApply (map id b))
+-- zip together a PhrasePair with pick+random
+-- first learn IO
+
+-- mmap (unwords . reflect . words) (match '*' "I need *" "I need you to kill yourself")
+-- rulesApply [("I need *", "Why do you need *?")] "I need you to kill yourself"
+-- rulesApply [((words "I need *"), (words "Why do you need * ?"))] (words "I need you to kill yourself")
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
-rulesApply _ = id
+rulesApply p i = try (transformationsApply "*" reflect p) i
 
+-- reflect ["i", "will", "never", "see", "my", "reflection", "in", "your", "eyes"]
 reflect :: Phrase -> Phrase
 reflect [] = []
-reflect (p:ps) = lol(orElse (lookup p reflections) (Just p)) : reflect ps
-  where lol (Just a) = a
--- closer examine the try function in Utilities
+reflect (p:ps) = try (flip lookup reflections) p : reflect ps
 
---let reflections =  [ ("am",     "are"),    ("was",    "were"),    ("i",      "you"),    ("i'm",    "you are"),    ("i'd",    "you would"),    ("i've",   "you have"),    ("i'll",   "you will"),    ("my",     "your"),    ("me",     "you"),    ("are",    "am"),    ("you're", "i am"),    ("you've", "i have"),    ("you'll", "i will"),    ("your",   "my"),    ("yours",  "mine"),    ("you",    "me")  ]
+
 reflections =
-  [ ("am",     "are"),
-    ("was",    "were"),
-    ("i",      "you"),
-    ("i'm",    "you are"),
-    ("i'd",    "you would"),
-    ("i've",   "you have"),
-    ("i'll",   "you will"),
-    ("my",     "your"),
-    ("me",     "you"),
-    ("are",    "am"),
-    ("you're", "i am"),
-    ("you've", "i have"),
-    ("you'll", "i will"),
-    ("your",   "my"),
-    ("yours",  "mine"),
-    ("you",    "me")
+  [ ("am",      "are"),
+    ("was",     "were"),
+    ("i",       "you"),
+    ("i'm",     "you are"),
+    ("i'd",     "you would"),
+    ("i've",    "you have"),
+    ("i'll",    "you will"),
+    ("my",      "your"),
+    ("me",      "you"),
+    ("are",     "am"),
+    ("you're",  "i am"),
+    ("you've",  "i have"),
+    ("you'll",  "i will"),
+    ("your",    "my"),
+    ("yours",   "mine"),
+    ("you",     "me"),
+    ("yourself","myself")
   ]
-
 
 ---------------------------------------------------------------------------------
 
@@ -75,12 +83,11 @@ prepare :: String -> Phrase
 prepare = reduce . words . map toLower . filter (not . flip elem ".,:;*!#%&|")
 
 rulesCompile :: [(String, [String])] -> BotBrain
-{- TO BE WRITTEN -}
-rulesCompile _ = []
-
+rulesCompile r = map f r
+  where f x = (g . fst $ x, map g (snd x))
+        g = words . map toLower
 
 --------------------------------------
-
 
 reductions :: [PhrasePair]
 reductions = (map.map2) (words, words)
