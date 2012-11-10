@@ -5,7 +5,6 @@ import Random
 import Char
 import Random
 
-
 chatterbot :: String -> [(String, [String])] -> IO ()
 chatterbot botName botRules = do
     putStrLn ("\n\nHi! I am " ++ botName ++ ". How are you?")
@@ -35,10 +34,6 @@ stateOfMind b = do
   let f x = (fst x, pick r (snd x))
   return (rulesApply (map f b))
 
--- return (rulesApply (map id b))
--- zip together a PhrasePair with pick+random
--- first learn IO
-
 -- mmap (unwords . reflect . words) (match '*' "I need *" "I need you to kill yourself")
 -- rulesApply [("I need *", "Why do you need *?")] "I need you to kill yourself"
 -- rulesApply [((words "I need *"), (words "Why do you need * ?"))] (words "I need you to kill yourself")
@@ -49,7 +44,6 @@ rulesApply p = try (transformationsApply "*" reflect p)
 reflect :: Phrase -> Phrase
 reflect [] = []
 reflect (p:ps) = try (flip lookup reflections) p : reflect ps
-
 
 reflections =
   [ ("am",      "are"),
@@ -109,10 +103,3 @@ reduce = reductionsApply reductions
 
 reductionsApply :: [PhrasePair] -> Phrase -> Phrase
 reductionsApply r i = try (transformationsApply "*" id reductions) i
-
-
--- repeat untill Nothing with fix?
-
--- take a list of phrase pairs and apply them on the input phrase to remove shit
-
-
