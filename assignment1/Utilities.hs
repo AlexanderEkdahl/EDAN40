@@ -8,13 +8,13 @@ map2 (f1, f2) (x1, x2) = (f1 x1, f2 x2)
 
 -- If the second argument is unequal to Nothing the function f is run on value of the second argument
 mmap :: (a -> b) -> Maybe a -> Maybe b
-mmap f  Nothing  = Nothing
-mmap f (Just x)  = Just (f x)
+mmap f Nothing  = Nothing
+mmap f (Just x) = Just (f x)
 
 -- Returns the second argument if the first argument is Nothing, otherwise it returns the first argument
 orElse :: Maybe a -> Maybe a -> Maybe a
-orElse Nothing  x  = x
-orElse (Just a) _  = Just a
+orElse Nothing x  = x
+orElse (Just a) _ = Just a
 
 -- Tries running the function f on parameter x. If it is unequal to Nothing it returns the value of the function.
 -- Otherwise returns the default value of x

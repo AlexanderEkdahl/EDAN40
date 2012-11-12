@@ -20,13 +20,13 @@ match _ [] _  = Nothing
 match _ _ []  = Nothing
 match wc (p:ps) (s:ss)
   | p == wc = orElse (singleWildcardMatch (p:ps) (s:ss)) (longerWildcardMatch (p:ps) (s:ss))
-  | p == s = match wc ps ss
+  | p == s  = match wc ps ss
   | otherwise = Nothing
 
 singleWildcardMatch, longerWildcardMatch :: Eq a => [a] -> [a] -> Maybe [a]
-singleWildcardMatch (wc:ps) (x:xs) = f (match wc ps xs) x
+singleWildcardMatch (wc:ps) (x:xs) = f (match wc ps xs) [x]
   where f Nothing _ = Nothing
-        f _ x = Just [x]
+        f _ x = Just x
 
 longerWildcardMatch (wc:ps) (x:xs) = mmap (x:) (match wc (wc:ps) xs)
 
