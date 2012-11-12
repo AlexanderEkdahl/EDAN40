@@ -62,7 +62,8 @@ reflections =
     ("your",    "my"),
     ("yours",   "mine"),
     ("you",     "me"),
-    ("yourself","myself")
+    ("yourself","myself"),
+    ("myself",  "yourself")
   ]
 
 ---------------------------------------------------------------------------------
@@ -101,4 +102,4 @@ reduce :: Phrase -> Phrase
 reduce = reductionsApply reductions
 
 reductionsApply :: [PhrasePair] -> Phrase -> Phrase
-reductionsApply r = try (transformationsApply "*" id reductions)
+reductionsApply r = fix (try (transformationsApply "*" id reductions))
