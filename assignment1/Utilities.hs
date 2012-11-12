@@ -7,8 +7,6 @@ map2 :: (a -> b, c -> d) -> (a, c) -> (b, d)
 map2 (f1, f2) (x1, x2) = (f1 x1, f2 x2)
 
 -- If the second argument is unequal to Nothing the function f is run on value of the second argument
--- can be used on curried(?) functions example.. transformationApply wc f l t = mmap (substitute wc (snd t)) (match wc (fst t) l)
--- where substitute is lacking one argument(that is later applied with match)
 mmap :: (a -> b) -> Maybe a -> Maybe b
 mmap f  Nothing  = Nothing
 mmap f (Just x)  = Just (f x)
@@ -30,6 +28,6 @@ fix f x
    |  f x == x  = x
    |  otherwise = fix f (f x)
 
--- Picks an element from xs depending on u being from 0.0(the first element) to 1 the last element
+-- Picks an element from xs depending on u being from 0.0(the first element) to 1.0 the last element
 pick :: RealFrac r => r -> [a] -> a
 pick u xs = xs !! (floor.(u*).fromIntegral.length) xs
