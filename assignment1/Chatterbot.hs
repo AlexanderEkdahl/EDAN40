@@ -34,13 +34,9 @@ stateOfMind b = do
   let f x = (fst x, pick r (snd x))
   return (rulesApply (map f b))
 
--- mmap (unwords . reflect . words) (match '*' "I need *" "I need you to kill yourself")
--- rulesApply [("I need *", "Why do you need *?")] "I need you to kill yourself"
--- rulesApply [((words "I need *"), (words "Why do you need * ?"))] (words "I need you to kill yourself")
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply p = try (transformationsApply "*" reflect p)
 
--- reflect ["i", "will", "never", "see", "my", "reflection", "in", "your", "eyes"]
 reflect :: Phrase -> Phrase
 reflect [] = []
 reflect (p:ps) = try (flip lookup reflections) p : reflect ps

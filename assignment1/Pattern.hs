@@ -14,9 +14,6 @@ substitute wc (x:xs) s
 
 -- Tries to match two lists. If they match, the result consists of the sublist
 -- bound to the wildcard in the pattern list.
--- match '*' "I need *" "I need you to kill yourself"
--- match "*" ["I","need","*"] ["I","need","you","to","kill","yourself"]
--- mmap reflect (match "*" ["I","need","*"] ["I","need","you","to","kill","yourself"])
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
 match _ [] [] = Just []
 match _ [] _  = Nothing
@@ -45,13 +42,10 @@ longerWildcardMatch (wc:ps) xs
 --------------------------------------------------------
 
 -- Applying a single pattern
--- transformationApply '*' (unwords . reflect . words)  "I need you to kill yourself" ("I need *", "Why do you need * ?")
--- transformationApply '*' id "please kill yourself" ("please *", "*")
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
 transformationApply wc f l t = mmap (substitute wc (snd t)) (mmap f (match wc (fst t) l))
 
 -- Applying a list of patterns until one succeeds
--- transformationsApply '*' (unwords . reflect . words) [("I need *", "Why do you need * ?")] "I need you to kill yourself"
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
 transformationsApply _ _ [] _ = Nothing
 transformationsApply wc f t l = orElse (transformationApply wc f l (head t)) (transformationsApply wc f (tail t) l)
