@@ -18,9 +18,9 @@ match :: Eq a => a -> [a] -> [a] -> Maybe [a]
 match _ [] [] = Just []
 match _ [] _  = Nothing
 match _ _ []  = Nothing
-match wc p s
-  | head p == wc = orElse (singleWildcardMatch p s) (longerWildcardMatch p s)
-  | head p == head s = match wc (tail p) (tail s)
+match wc (p:ps) (s:ss)
+  | p == wc = orElse (singleWildcardMatch (p:ps) (s:ss)) (longerWildcardMatch (p:ps) (s:ss))
+  | p == s = match wc ps ss
   | otherwise = Nothing
 
 singleWildcardMatch, longerWildcardMatch :: Eq a => [a] -> [a] -> Maybe [a]

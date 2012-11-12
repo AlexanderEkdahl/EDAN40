@@ -31,10 +31,7 @@ type BotBrain = [(Phrase, [Phrase])]
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
 stateOfMind b = do
   r <- randomIO :: IO Float
-  let f x = (fst x, pick r (snd x))
-  return (rulesApply (map f b))
-
--- use map2 instead of f x
+  return (rulesApply ((map . map2) (id, pick r) b))
 
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply p = try (transformationsApply "*" reflect p)
