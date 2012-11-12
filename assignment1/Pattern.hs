@@ -23,19 +23,12 @@ match wc p s
   | head p == head s = match wc (tail p) (tail s)
   | otherwise = Nothing
 
--- Helper function to match
 singleWildcardMatch, longerWildcardMatch :: Eq a => [a] -> [a] -> Maybe [a]
-singleWildcardMatch _ [] = Nothing
-singleWildcardMatch [] _ = Nothing
-singleWildcardMatch (wc:ps) (x:xs)
-  | ps == xs = (Just [x])
-  | otherwise = Nothing
+singleWildcardMatch (wc:ps) (x:xs) = f (match wc ps xs) x
+  where f Nothing _ = Nothing
+        f _ x = Just [x]
 
-longerWildcardMatch _ [] = Nothing
-longerWildcardMatch [] _ = Nothing
-longerWildcardMatch (wc:ps) xs
-  | reverse (take (length ps) (reverse xs)) == ps = Just (take (length xs - length ps) xs)
-  | otherwise = Nothing
+longerWildcardMatch (wc:ps) (x:xs) = mmap (x:) (match wc (wc:ps) xs)
 
 -------------------------------------------------------
 -- Applying patterns

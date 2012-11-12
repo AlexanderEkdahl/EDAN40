@@ -34,6 +34,8 @@ stateOfMind b = do
   let f x = (fst x, pick r (snd x))
   return (rulesApply (map f b))
 
+-- use map2 instead of f x
+
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply p = try (transformationsApply "*" reflect p)
 
