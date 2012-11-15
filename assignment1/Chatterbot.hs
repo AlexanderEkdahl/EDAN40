@@ -31,13 +31,13 @@ type BotBrain = [(Phrase, [Phrase])]
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
 stateOfMind b = do
   r <- randomIO :: IO Float
-  return (rulesApply ((map . map2) (id, pick r) b))
+  return $ rulesApply $ (map . map2) (id, pick r) b
 
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
-rulesApply p = try (transformationsApply "*" reflect p)
+rulesApply p = try $ transformationsApply "*" reflect p
 
 reflect :: Phrase -> Phrase
-reflect = map (try $ flip lookup reflections)
+reflect = map $ try $ flip lookup reflections
 
 reflections =
   [ ("am",      "are"),
@@ -97,4 +97,4 @@ reduce :: Phrase -> Phrase
 reduce = reductionsApply reductions
 
 reductionsApply :: [PhrasePair] -> Phrase -> Phrase
-reductionsApply r = fix (try (transformationsApply "*" id reductions))
+reductionsApply r = fix $ try $ transformationsApply "*" id reductions
