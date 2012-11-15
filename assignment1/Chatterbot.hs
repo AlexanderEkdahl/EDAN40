@@ -37,8 +37,7 @@ rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply p = try (transformationsApply "*" reflect p)
 
 reflect :: Phrase -> Phrase
-reflect [] = []
-reflect (p:ps) = try (flip lookup reflections) p : reflect ps
+reflect = map (try $ flip lookup reflections)
 
 reflections =
   [ ("am",      "are"),
@@ -67,7 +66,8 @@ endOfDialog :: String -> Bool
 endOfDialog = (=="quit") . map toLower
 
 present :: Phrase -> String
-present = unwords
+present p = cap . unwords $ [ if x == "i" then "I" else x | x <- p ]
+  where cap (x:xs) = toUpper x : xs
 
 prepare :: String -> Phrase
 prepare = reduce . words . map toLower . filter (not . flip elem ".,:;*!#%&|")
