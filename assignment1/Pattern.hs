@@ -41,4 +41,4 @@ transformationApply wc f l t = mmap (substitute wc (snd t)) (mmap f (match wc (f
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
 transformationsApply _ _ [] _ = Nothing
-transformationsApply wc f t l = orElse (transformationApply wc f l (head t)) (transformationsApply wc f (tail t) l)
+transformationsApply wc f t l = foldl1 orElse $ map (transformationApply wc f l) t
