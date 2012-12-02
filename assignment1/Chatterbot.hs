@@ -1,9 +1,8 @@
 module Chatterbot where
 import Utilities
 import Pattern
-import Random
-import Char
-import Random
+import System.Random
+import Data.Char
 
 chatterbot :: String -> [(String, [String])] -> IO ()
 chatterbot botName botRules = do

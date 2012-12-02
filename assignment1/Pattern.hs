@@ -24,9 +24,7 @@ match wc (p:ps) (s:ss)
   | otherwise = Nothing
 
 singleWildcardMatch, longerWildcardMatch :: Eq a => [a] -> [a] -> Maybe [a]
-singleWildcardMatch (wc:ps) (x:xs) = f (match wc ps xs) [x]
-  where f Nothing _ = Nothing
-        f _ x = Just x
+singleWildcardMatch (wc:ps) (x:xs) = match wc ps xs >>= \_ -> return [x]
 
 longerWildcardMatch (wc:ps) (x:xs) = mmap (x:) (match wc (wc:ps) xs)
 
