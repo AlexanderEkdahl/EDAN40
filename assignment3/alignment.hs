@@ -31,14 +31,42 @@ score x y
   | x == y    = scoreMatch
   | otherwise = scoreMismatch
 
---sim (x:xs) (y:ys) = maximum [sim(xs ys) + score(x,y), sim(xs,(y:ys)) + score(x,'-'), sim((x:xs),ys) + score('-',y)]
-sim [] _ = 0
-sim _ [] = 0
-sim (x:xs) (y:ys) = maximum [ (sim xs ys) + (score x y), (sim xs (y:ys)) + (score x '-'), (sim (x:xs) ys) + (score '-' y) ]
+similarityScore [] _ = 0
+similarityScore _ [] = 0
+similarityScore (x:xs) (y:ys) = maximum [ (similarityScore xs ys) + (score x y), 
+										  (similarityScore xs (y:ys)) + (score x '-'),
+										  (similarityScore (x:xs) ys) + (score '-' y) ]
 
 -- Attaches h1 and h2 to the front of each of the strings the the pairs
 attachHeads :: a -> a -> [([a],[a])] -> [([a],[a])]
 attachHeads h1 h2 list = [(h1:xs, h2:ys) | (xs,ys) <- list]
+
+--maximaBy :: Ord b => (a -> b) -> [a] -> [a] 
+--maximaBy f (x:xs) = 
+
+--maximaBy' (y:ys) (x:xs)
+--	| v > r     = maximaBy' v [x] xs
+--	| v == r    = maximaBy' v [y:ys:x] xs
+--	| otherwise = maximaBy' r [y:ys] xs
+--	where v = length x
+--		  r = length y
+
+maximaBy _ [] = []
+maximaBy [] _ = []
+maximaBy (y:ys) (x:xs)  
+    | v > r         = maximaBy [x] xs
+    | v == r        = maximaBy ([y] ++ ys ++ [x]) xs
+    | otherwise     = maximaBy ([y] ++ ys) xs
+    where v = length x
+          r = length y
+
+-- | v > r     = maximaBy' v [x] xs
+-- | v == r    = maximaBy' v [y:ys:x] xs
+-- | otherwise = maximaBy' r [y:ys] xs
+-- where v = f x
+--      r = f y
+
+--maximum --maximum [ f x | x <- xs]  
 
 --similarityScore :: String -> String -> Int
 --similarityScore string1 string2
