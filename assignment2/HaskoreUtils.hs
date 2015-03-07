@@ -1,4 +1,4 @@
--- This module was formerly called "HugsUtils" - but it was 
+-- This module was formerly called "HugsUtils" - but it was
 -- too messy to make it a "standard Hugs library" so we moved it
 -- over here.
 
@@ -10,7 +10,8 @@ module HaskoreUtils(
         zeroOrMore, oneOrMore,
 	) where
 
-import Monad
+import Control.Monad
+import Control.Exception hiding (assert)
 
 -- ToDo: decide on appropriate fixities for these functions
 infixr 2 `andOnError`, `butOnError`
@@ -47,7 +48,7 @@ spaces n = replicate (n `max` 0) ' '
 -- they might forget to release resources when an exception is
 -- invoked.  For example, this program would fail to close
 -- "outFile" if an error occured while operating on one of the "inFile"s.
--- 
+--
 --   cat :: String -> [String] -> IO ()
 --   cat outfile files = do
 --     outFile <- open outfile WriteMode
@@ -55,7 +56,7 @@ spaces n = replicate (n `max` 0) ' '
 --   	    inFile <- open file ReadMode
 --   	    copy inFile outFile
 --   	    close inFile
---        ) 
+--        )
 --       files
 --     close outFile
 --
@@ -78,7 +79,7 @@ spaces n = replicate (n `max` 0) ' '
 --   	    open file ReadMode   >>= \ inFile ->
 --   	    copy inFile outFile  `andOnError`
 --   	    close inFile
---        ) 
+--        )
 --       files
 --      `andOnError`
 --       close outFile
@@ -96,4 +97,3 @@ m `butOnError` k = (m `catch` \e -> k >> ioError e)
 zeroOrMore, oneOrMore :: MonadPlus m => m a -> m [a]
 zeroOrMore m      = return [] `mplus` oneOrMore m
 oneOrMore  m      = do { a <- m; as <- zeroOrMore m; return (a:as) }
-
