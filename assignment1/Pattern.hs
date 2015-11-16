@@ -3,7 +3,7 @@ import Utilities
 
 -------------------------------------------------------
 -- Match and substitute
---------------------------------------------------------
+-------------------------------------------------------
 
 -- Replaces a wildcard in a list with the list given as the third argument
 substitute :: Eq a => a -> [a] -> [a] -> [a]
@@ -27,7 +27,7 @@ longerWildcardMatch (wc:ps) (x:xs) = mmap (x:) (match wc (wc:ps) xs)
 
 -------------------------------------------------------
 -- Applying patterns
---------------------------------------------------------
+-------------------------------------------------------
 
 -- Applying a single pattern
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
