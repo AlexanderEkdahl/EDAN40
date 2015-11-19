@@ -31,7 +31,7 @@ stateOfMind b = do
   return $ rulesApply $ (map . map2) (id, pick r) b
 
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
-rulesApply p = try $ transformationsApply "*" reflect p
+rulesApply = try . transformationsApply "*" reflect
 
 reflect :: Phrase -> Phrase
 reflect = map $ try $ flip lookup reflections
@@ -62,13 +62,14 @@ endOfDialog :: String -> Bool
 endOfDialog = (=="quit") . map toLower
 
 present :: Phrase -> String
-present = unwords
+present p = cap . unwords $ [ if x == "i" then "I" else x | x <- p ]
+  where cap (x:xs) = toUpper x : xs
 
 prepare :: String -> Phrase
 prepare = reduce . words . map toLower . filter (not . flip elem ".,:;*!#%&|")
 
 rulesCompile :: [(String, [String])] -> BotBrain
-rulesCompile r = (map.map2) (f, map f) r
+rulesCompile = (map.map2) (f, map f)
   where f = words . map toLower
 
 
@@ -94,8 +95,7 @@ reduce :: Phrase -> Phrase
 reduce = reductionsApply reductions
 
 reductionsApply :: [PhrasePair] -> Phrase -> Phrase
-{- TO BE WRITTEN -}
-reductionsApply _ = id
+reductionsApply r = fix $ try $ transformationsApply "*" id r
 
 
 -------------------------------------------------------
@@ -118,7 +118,7 @@ match wc (p:ps) (s:ss)
   | otherwise = Nothing
 
 singleWildcardMatch, longerWildcardMatch :: Eq a => [a] -> [a] -> Maybe [a]
-singleWildcardMatch (wc:ps) (x:xs) = match wc ps xs >> return [x]
+singleWildcardMatch (wc:ps) (x:xs) = mmap (const [x]) (match wc ps xs)
 
 longerWildcardMatch (wc:ps) (x:xs) = mmap (x:) (match wc (wc:ps) xs)
 
@@ -144,7 +144,7 @@ matchCheck = matchTest == Just testSubstitutions
 
 -- Applying a single pattern
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
-transformationApply wc f l t = mmap (substitute wc (snd t)) (mmap f (match wc (fst t) l))
+transformationApply wc f l (a, b) = mmap (substitute wc b . f) (match wc a l)
 
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]

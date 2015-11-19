@@ -6,7 +6,7 @@ module Utilities where
 map2 :: (a -> b, c -> d) -> (a, c) -> (b, d)
 map2 (f1, f2) (x1, x2) = (f1 x1, f2 x2)
 
--- If the second argument is unequal to Nothing the function f is run on value of the second argument
+-- If the second argument is Just something the function f is run on value of the second argument
 mmap :: (a -> b) -> Maybe a -> Maybe b
 mmap = fmap
 
