@@ -62,8 +62,8 @@ optAlignments2 xs ys = snd $ opt (length xs) (length ys)
                                    (b + score x '-', attachTails x '-' optb),
                                    (c + score '-' y, attachTails '-' y optc) ]
 
-outputOptAlignments2 :: String -> String -> IO ()
-outputOptAlignments2 x y = do
+outputOptAlignments :: String -> String -> IO ()
+outputOptAlignments x y = do
   let a = optAlignments2 x y
   putStrLn ("There are " ++ show (length a) ++ " optimal alignments")
   mapM_ (putStrLn . f) a
