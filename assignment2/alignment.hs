@@ -14,17 +14,14 @@ score x y
   | otherwise = scoreMismatch
 
 similarityScore :: String -> String -> Int
-similarityScore xs [] = scoreSpace * length (xs)
-similarityScore [] ys = scoreSpace * length (ys)
+similarityScore xs [] = scoreSpace * length xs
+similarityScore [] ys = scoreSpace * length ys
 similarityScore (x:xs) (y:ys) = maximum [ similarityScore xs ys + score x y,
                                           similarityScore xs (y:ys) + score x '-',
                                           similarityScore (x:xs) ys + score '-' y ]
 
 attachHeads :: a -> a -> [([a],[a])] -> [([a],[a])]
 attachHeads h1 h2 list = [(h1:xs, h2:ys) | (xs,ys) <- list]
-
-attachTails :: a -> a -> [([a],[a])] -> [([a],[a])]
-attachTails h1 h2 aList = [(xs ++ [h1],ys ++ [h2]) | (xs,ys) <- aList]
 
 maximaBy :: Ord b => (a -> b) -> [a] -> [a]
 maximaBy f xs = [x | x <- xs, f x == maximum (map f xs)]
@@ -41,7 +38,7 @@ optAlignments (x:xs) (y:ys) = maximaBy (uncurry similarityScore) l
                      attachHeads '-' y (optAlignments (x:xs) ys) ]
 
 optAlignments2 :: String -> String -> [AlignmentType]
-optAlignments2 xs ys = snd $ opt (length xs) (length ys)
+optAlignments2 xs ys = map (\(a, b) -> (reverse a, reverse b)) (snd (opt (length xs) (length ys)))
     where
         opt :: Int -> Int -> (Int, [AlignmentType])
         opt i j = optTable !! i !! j
@@ -58,9 +55,9 @@ optAlignments2 xs ys = snd $ opt (length xs) (length ys)
               (c, optc) = opt i (j - 1)
               x = xs !! (i - 1)
               y = ys !! (j - 1)
-              z = maximaBy fst $ [ (a + score x y, attachTails x y opta),
-                                   (b + score x '-', attachTails x '-' optb),
-                                   (c + score '-' y, attachTails '-' y optc) ]
+              z = maximaBy fst $ [ (a + score x y, attachHeads x y opta),
+                                   (b + score x '-', attachHeads x '-' optb),
+                                   (c + score '-' y, attachHeads '-' y optc) ]
 
 outputOptAlignments :: String -> String -> IO ()
 outputOptAlignments x y = do
