@@ -46,7 +46,7 @@ optAlignments2 xs ys = map (\(a, b) -> (reverse a, reverse b)) (snd (opt (length
 
         optEntry :: Int -> Int -> (Int, [AlignmentType])
         optEntry 0 0 = (0, [([],[])])
-        optEntry i 0 = (scoreSpace * i, [(replicate i '-', take i xs)])
+        optEntry i 0 = (scoreSpace * i, [(take i xs, replicate i '-')])
         optEntry 0 j = (scoreSpace * j, [(replicate j '-', take j ys)])
         optEntry i j = (fst (head z), concatMap snd z)
             where
