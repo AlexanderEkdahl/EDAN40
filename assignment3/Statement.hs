@@ -27,7 +27,7 @@ writeStatement = accept "write" -# Expr.parse #- require ";" >-> \v -> Write v
 indent = flip take (repeat '\t')
 
 shw :: Int -> Statement -> String
-shw n (Assignment v e)   = indent n ++ v ++ " := " ++ Expr.toString e ++ "\n"
+shw n (Assignment v e)   = indent n ++ v ++ " := " ++ Expr.toString e ++ ";\n"
 shw n (Skip)             = indent n ++ "skip;\n"
 shw n (Begin stmts)      = indent n ++ "begin\n" ++ concat (map (shw (n+1)) stmts) ++ indent n ++ "end\n"
 shw n (If cond s1 s2)    = indent n ++ "if " ++ Expr.toString cond ++ " then\n" ++ shw (n+1) s1 ++ indent n ++ "else\n" ++ shw (n+1) s2
